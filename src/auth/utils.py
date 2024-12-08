@@ -1,77 +1,77 @@
-import logging
+"""Utils for passwords and tokens"""
 import uuid
-from datetime import datetime, timedelta
-from itsdangerous import URLSafeTimedSerializer
+import time
 
 import jwt
+
+from datetime import datetime, timedelta, timezone
+
+from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
+
 from passlib.context import CryptContext
 
-from src.config import Config
+from fastapi import HTTPException, status
 
-passwd_context = CryptContext(schemes=["bcrypt"])
+from db.models import User
+from db.jti_blocklist import jti_blocklist
 
+from config import settings
 
-ACCESS_TOKEN_EXPIRY = 3600
+pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+def hash_password(password: str) -> str:
+    """Get password hash"""
+    return pwd_ctx.hash(password)
 
-def generate_passwd_hash(password: str) -> str:
-    hash = passwd_context.hash(password)
+def verify_password(password: str, password_hash: str) -> bool:
+    """Verify plain password"""
+    return pwd_ctx.verify(password, password_hash)
 
-    return hash
+def create_token(user: User, refresh: bool = False) -> str:
+    """Get encoded JWT"""
+    exp_delta = timedelta(days=settings.REFRESH_TOKEN_EXPIRE) if refresh else timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE)
 
-
-def verify_password(password: str, hash: str) -> bool:
-    return passwd_context.verify(password, hash)
-
-
-def create_access_token(
-    user_data: dict, expiry: timedelta = None, refresh: bool = False
-):
-    payload = {}
-
-    payload["user"] = user_data
-    payload["exp"] = datetime.now() + (
-        expiry if expiry is not None else timedelta(seconds=ACCESS_TOKEN_EXPIRY)
+    return jwt.encode(
+        headers={
+            "alg": "HS256",
+            "typ": "JWT"
+        },
+        payload={
+            "sub": str(user.uid),
+            "username": user.username,
+            "iat": int(time.time()),
+            "exp": datetime.now(timezone.utc) + exp_delta,
+            "refresh": refresh,
+            "jti": str(uuid.uuid4())
+        },
+        key=settings.JWT_SECRET_KEY
     )
-    payload["jti"] = str(uuid.uuid4())
 
-    payload["refresh"] = refresh
-
-    token = jwt.encode(
-        payload=payload, key=Config.JWT_SECRET, algorithm=Config.JWT_ALGORITHM
-    )
-
-    return token
-
-
-def decode_token(token: str) -> dict:
+def decode_token(encoded_jwt: str) -> dict:
+    """Get decoded token data"""
     try:
         token_data = jwt.decode(
-            jwt=token, key=Config.JWT_SECRET, algorithms=[Config.JWT_ALGORITHM]
+            jwt=encoded_jwt,
+            key=settings.JWT_SECRET_KEY,
+            algorithms=["HS256"]
         )
-
-        return token_data
-
-    except jwt.PyJWTError as e:
-        logging.exception(e)
-        return None
-
-serializer = URLSafeTimedSerializer(
-    secret_key=Config.JWT_SECRET, salt="email-configuration"
-)
-
-def create_url_safe_token(data: dict):
-
-    token = serializer.dumps(data)
-
-    return token
-
-def decode_url_safe_token(token:str):
-    try:
-        token_data = serializer.loads(token)
-
-        return token_data
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Expired token"
+        )
+    except InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token"
+        )
     
-    except Exception as e:
-        logging.error(str(e))
-        
+    return token_data
+
+async def block_jti(jti: str):
+    """Add to blocklist (revoke) token with provided JTI"""
+    await jti_blocklist.set(name=jti, value="")
+
+async def jti_blocked(jti: str) -> bool:
+    """Check is JTI in blocklist"""
+    return True if await jti_blocklist.get(name=jti) is not None else False
