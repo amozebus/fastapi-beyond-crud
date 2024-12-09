@@ -1,6 +1,7 @@
 """Service for requests handlers"""
 
 from fastapi import HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -8,7 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from db.models import User
 
 from .utils import hash_password, verify_password
-from .schemas import UserCreate, UserLogin
+from .schemas import UserCreate
 
 
 async def get_user(username: str, db_session: AsyncSession) -> User:
@@ -36,7 +37,7 @@ async def create_user(user_data: UserCreate, db_session: AsyncSession) -> User:
     return user
 
 
-async def auth_user(user_data: UserLogin, db_session: AsyncSession) -> User:
+async def auth_user(user_data: OAuth2PasswordRequestForm, db_session: AsyncSession) -> User:
     """Authenticate user"""
     user = await get_user(user_data.username, db_session)
     if user:

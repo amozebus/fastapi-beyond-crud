@@ -71,9 +71,9 @@ def decode_token(encoded_jwt: str) -> dict:
     return token_data
 
 
-async def block_jti(jti: str):
+async def block_jti(jti: str) -> None:
     """Add to blocklist (revoke) token with provided JTI"""
-    await jti_blocklist.set(name=jti, value="")
+    await jti_blocklist.set(name=jti, value="", ex=settings.ACCESS_TOKEN_EXPIRE)
 
 
 async def jti_blocked(jti: str) -> bool:

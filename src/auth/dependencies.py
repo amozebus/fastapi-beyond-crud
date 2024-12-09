@@ -1,56 +1,31 @@
 """Authentication dependencies for requests handlers"""
 
-from fastapi import Request, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from typing import Annotated
+
+from sqlalchemy.ext.asyncio.session import AsyncSession
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+
+from db import get_db_session
+from db.models import User
 
 from .utils import decode_token, jti_blocked
+from .service import get_user
 
+bearer = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-class TokenBearer(HTTPBearer):
-    """Base bearer class"""
+async def get_current_user(
+    token: Annotated[str, Depends(bearer)],
+    db_session: Annotated[AsyncSession, Depends(get_db_session)]
+) -> User:
+    token_data = decode_token(token)
+    if await jti_blocked(token_data["jti"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Revoked token"
+        )
 
-    def __init__(self, auto_error=True):
-        super().__init__(auto_error=auto_error)
+    user = await get_user(token_data['username'], db_session)
 
-    async def __call__(
-        self, request: Request
-    ) -> HTTPAuthorizationCredentials | dict | None:
-        """Decode and verify encoded JWT"""
-        creds = await super().__call__(request)
-
-        encoded_jwt = creds.credentials
-
-        token_data = decode_token(encoded_jwt=encoded_jwt)
-
-        if token_data:
-            if await jti_blocked(token_data["jti"]):
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED, detail="Revoked token"
-                )
-
-            self.bearer(token_data)
-
-            return token_data
-
-    def bearer(self, token_data: dict):
-        raise NotImplementedError()
-
-
-class AccessTokenBearer(TokenBearer):
-    """Bearer for access tokens"""
-
-    def bearer(self, token_data: dict):
-        if token_data["refresh"]:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Provide access token"
-            )
-
-
-class RefreshTokenBearer(TokenBearer):
-    """Bearer for refresh tokens"""
-
-    def bearer(self, token_data: dict):
-        if not token_data["refresh"]:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Provide refresh token"
-            )
+    return user
