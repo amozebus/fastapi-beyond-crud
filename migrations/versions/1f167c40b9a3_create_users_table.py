@@ -33,8 +33,9 @@ def upgrade() -> None:
         ),
         sa.Column("username", sa.VARCHAR, nullable=False, unique=True),
         sa.Column("password_hash", sa.VARCHAR, nullable=False),
+        table_name="users"
     )
 
 
 def downgrade() -> None:
-    pass
+    op.drop_table(table_name="users")
