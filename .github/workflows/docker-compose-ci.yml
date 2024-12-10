@@ -1,0 +1,20 @@
+name: Docker Compose CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Docker Compose
+      run: sudo apt-get install docker-compose
+    - name: Build and run containers with Docker Compose
+      run: docker compose up --build
