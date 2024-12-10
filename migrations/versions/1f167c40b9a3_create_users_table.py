@@ -23,6 +23,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     op.create_table(
+        "users",
         sa.Column(
             "uid",
             sa.UUID,
@@ -33,9 +34,9 @@ def upgrade() -> None:
         ),
         sa.Column("username", sa.VARCHAR, nullable=False, unique=True),
         sa.Column("password_hash", sa.VARCHAR, nullable=False),
-        table_name="users"
+        if_not_exists=True
     )
 
 
 def downgrade() -> None:
-    op.drop_table(table_name="users")
+    op.drop_table("users")
