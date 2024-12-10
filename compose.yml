@@ -1,6 +1,7 @@
 services:
   api:
     build: .
+    restart: on-failure
     ports:
       - 8000:8000
     environment:
