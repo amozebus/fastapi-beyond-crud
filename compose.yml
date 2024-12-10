@@ -2,7 +2,19 @@ services:
   api:
     build: .
     ports:
-      - 8000:8000 
+      - 8000:8000
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_USER_PASSWORD=${DB_USER_PASSWORD}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ACCESS_TOKEN_EXPIRE=${ACCESS_TOKEN_EXPIRE}
+      - REFRESH_TOKEN_EXPIRE=${REFRESH_TOKEN_EXPIRE}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     depends_on:
       - db
       - redis
