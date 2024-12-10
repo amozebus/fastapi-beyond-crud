@@ -31,7 +31,8 @@ def rate_limit(max_calls: int, period: int):
             wait = period - (now - timestamps[0])
             raise HTTPException(
                 status_code=429,
-                detail=f"Rate limit exceeded. Retry after {wait:.2f} seconds",
+                headers={"Retry-After": f"{int(wait)}"},
+                detail="Rate limit exceeded. Retry after try again later",
             )
 
         return wrapper
