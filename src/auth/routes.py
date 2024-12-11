@@ -51,7 +51,8 @@ async def login(
 
 @r.post("/refresh", response_model=Token)
 async def refresh(
-    request: Request
+    request: Request,
+    response: Response
 ) -> Token:
     """Refresh tokens"""
     refresh_token = request.cookies.get("refresh_token")
@@ -62,10 +63,19 @@ async def refresh(
             detail="Refresh token missing"
         )
 
-    token_data = decode_token(refresh_token)
+    refresh_token_data = decode_token(refresh_token)
 
-    user = User(**token_data)
-    user.uid = token_data["sub"]
+    user = User(**refresh_token_data)
+    user.uid = refresh_token_data["sub"]
+
+    await block_jti(refresh_token_data["jti"])
+    
+    response.set_cookie(
+        key="refresh_token",
+        value=create_token(user, refresh=True),
+        httponly=True,
+        secure=True
+    )
 
     return Token(
         access_token=create_token(user),

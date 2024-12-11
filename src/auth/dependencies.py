@@ -19,6 +19,10 @@ async def get_current_user(
     token: Annotated[str, Depends(bearer)],
     db_session: Annotated[AsyncSession, Depends(get_db_session)]
 ) -> User:
+    """
+    Get current user via token data.
+    Use as dependency to authorize user
+    """
     token_data = decode_token(token)
     if await jti_blocked(token_data["jti"]):
         raise HTTPException(
