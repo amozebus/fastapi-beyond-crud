@@ -45,8 +45,7 @@ async def login(
     )
 
     return Token(
-        access_token=create_token(user),
-        token_type="bearer"
+        access_token=create_token(user)
     )
 
 @r.post("/refresh", response_model=Token)
@@ -56,7 +55,6 @@ async def refresh(
 ) -> Token:
     """Refresh tokens"""
     refresh_token = request.cookies.get("refresh_token")
-
     if not refresh_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -67,7 +65,8 @@ async def refresh(
     if await jti_blocked(refresh_token_data["jti"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Revoked token"
+            detail="Revoked token",
+            headers={"WWW-Authenticate": "Bearer"}
         )
 
     user = User(**refresh_token_data)
@@ -83,8 +82,7 @@ async def refresh(
     )
 
     return Token(
-        access_token=create_token(user),
-        token_type="bearer"
+        access_token=create_token(user)
     )
 
 @r.post("/logout", response_model=dict[str, str])

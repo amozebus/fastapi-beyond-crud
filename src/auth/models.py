@@ -7,4 +7,4 @@ class Token(BaseModel):
 
     access_token: str
     expires_in: int = settings.ACCESS_TOKEN_EXPIRE * 60
-    token_type: str
+    token_type: str = "Bearer"

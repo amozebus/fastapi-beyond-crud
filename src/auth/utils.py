@@ -61,11 +61,15 @@ def decode_token(encoded_jwt: str) -> dict:
         )
     except ExpiredSignatureError:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired token"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Expired token",
+            headers={"WWW-Authenticate": "Bearer"}
         )
     except InvalidTokenError:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+            headers={"WWW-Authenticate": "Bearer"}
         )
 
     return token_data
