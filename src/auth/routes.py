@@ -12,7 +12,7 @@ from db.models import User
 
 from .models import Token
 from .schemas import UserCreate
-from .utils import create_token, decode_token, block_jti
+from .utils import create_token, decode_token, block_jti, jti_blocked
 from .service import create_user, auth_user
 from .dependencies import bearer
 
@@ -64,11 +64,16 @@ async def refresh(
         )
 
     refresh_token_data = decode_token(refresh_token)
+    if await jti_blocked(refresh_token_data["jti"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Revoked token"
+        )
 
     user = User(**refresh_token_data)
     user.uid = refresh_token_data["sub"]
 
-    await block_jti(refresh_token_data["jti"])
+    await block_jti(refresh_token_data["jti"], refresh=True)
     
     response.set_cookie(
         key="refresh_token",
@@ -84,12 +89,18 @@ async def refresh(
 
 @r.post("/logout", response_model=dict[str, str])
 async def logout(
+    request: Request,
     response: Response,
     access_token: Annotated[str, Depends(bearer)]
 ) -> dict[str, str]:
-    access_token_data = decode_token(access_token)
-    await block_jti(access_token_data["jti"])
+    refresh_token = request.cookies.get("refresh_token")
+    refresh_token_data = decode_token(refresh_token)
 
+    access_token_data = decode_token(access_token)
+
+    await block_jti(access_token_data["jti"])
+    await block_jti(refresh_token_data["jti"], refresh=True)
+    
     response.delete_cookie(key="refresh_token")
 
     return {
