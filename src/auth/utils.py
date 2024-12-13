@@ -11,10 +11,10 @@ from jwt.exceptions import InvalidTokenError, ExpiredSignatureError
 
 from passlib.context import CryptContext
 
-from fastapi import HTTPException, status
-
 from db.models import User
 from db.jti_blocklist import jti_blocklist
+
+from .exceptions import BearerTokenException
 
 from config import settings
 
@@ -23,16 +23,19 @@ pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str) -> str:
     """Get password hash"""
+
     return pwd_ctx.hash(password)
 
 
 def verify_password(password: str, password_hash: str) -> bool:
     """Verify plain password"""
+
     return pwd_ctx.verify(password, password_hash)
 
 
 def create_token(user: User, refresh: bool = False) -> str:
     """Get encoded JWT"""
+
     exp_delta = (
         timedelta(days=settings.REFRESH_TOKEN_EXPIRE)
         if refresh
@@ -60,23 +63,19 @@ def decode_token(encoded_jwt: str) -> dict:
             jwt=encoded_jwt, key=settings.JWT_SECRET_KEY, algorithms=["HS256"]
         )
     except ExpiredSignatureError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Expired token",
-            headers={"WWW-Authenticate": "Bearer"}
-        )
+        raise BearerTokenException(detail="Expired token")
     except InvalidTokenError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token",
-            headers={"WWW-Authenticate": "Bearer"}
-        )
+        raise BearerTokenException(detail="Invalid token")
 
     return token_data
 
 
 async def block_jti(jti: str, refresh: bool = False) -> None:
-    expiry = settings.REFRESH_TOKEN_EXPIRE * 24 * 60 * 60 if refresh else settings.ACCESS_TOKEN_EXPIRE * 60
+    expiry = (
+        settings.REFRESH_TOKEN_EXPIRE * 24 * 60 * 60
+        if refresh
+        else settings.ACCESS_TOKEN_EXPIRE * 60
+    )
     """Add to blocklist (revoke) token with provided JTI"""
     await jti_blocklist.set(name=jti, value="", ex=expiry)
 

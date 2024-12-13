@@ -37,7 +37,9 @@ async def create_user(user_data: UserCreate, db_session: AsyncSession) -> User:
     return user
 
 
-async def auth_user(user_data: OAuth2PasswordRequestForm, db_session: AsyncSession) -> User:
+async def auth_user(
+    user_data: OAuth2PasswordRequestForm, db_session: AsyncSession
+) -> User:
     """Authenticate user"""
     user = await get_user(user_data.username, db_session)
     if user:

@@ -34,7 +34,7 @@ def upgrade() -> None:
         ),
         sa.Column("username", sa.VARCHAR, nullable=False, unique=True),
         sa.Column("password_hash", sa.VARCHAR, nullable=False),
-        if_not_exists=True
+        if_not_exists=True,
     )
 
 

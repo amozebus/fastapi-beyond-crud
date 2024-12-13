@@ -21,12 +21,7 @@ async def lifespan(application: FastAPI):
     logging.info("%s shutdown", application.title)
 
 
-app = FastAPI(
-    title="Beyond CRUD",
-    version="v1",
-    lifespan=lifespan,
-    root_path="/api/"
-)
+app = FastAPI(title="Beyond CRUD", version="v1", lifespan=lifespan, root_path="/api/")
 
 app.include_router(auth_router)
 app.include_router(crud_router)

@@ -6,8 +6,10 @@ from typing import Callable, Any
 
 from fastapi import Request, Response, HTTPException
 
+
 def rate_limit(max_calls: int, period: int):
     """Limiting requests rate by max_calls/period (in seconds)"""
+
     def decorator(func: Callable[[Request], Any]) -> Callable[[Request], Any]:
         usage: dict[str, list[float]] = {}
 
