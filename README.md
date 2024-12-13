@@ -4,7 +4,7 @@ Fork of [jod35/fastapi-beyond-CRUD](https://github.com/jod35/fastapi-beyond-CRUD
 
 Using [uvicorn web server](https://uvicorn.org) with [nginx](https://nginx.org)
 
-Auth using [OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749) with password credentials as authorization grant and [JSON Web Tokens](https://datatracker.ietf.org/doc/html/rfc7519) (HS256 encryption)
+Auth using [OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749) with password credentials as authorization grant with refresh tokens and [JSON Web Tokens](https://datatracker.ietf.org/doc/html/rfc7519) (HS256 encryption)
 
 [<img src="https://jwt.io/img/icon.svg" alt="JWT Logo" height=100 />](https://jwt.io) [<img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Oauth_logo.svg" alt="OAuth Logo" height=100 />](https://oauth.net)
 
