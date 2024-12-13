@@ -32,4 +32,4 @@ Run this command in root of project:
 docker compose up --build
 ```
 
-Check [Swagger UI](http://localhost:8000/docs)
+Check [Swagger UI](http://localhost/api/docs)
