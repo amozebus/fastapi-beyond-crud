@@ -71,12 +71,12 @@ def decode_token(encoded_jwt: str) -> dict:
 
 
 async def block_jti(jti: str, refresh: bool = False) -> None:
+    """Add to blocklist (revoke) token with provided JTI"""
     expiry = (
         settings.REFRESH_TOKEN_EXPIRE * 24 * 60 * 60
         if refresh
         else settings.ACCESS_TOKEN_EXPIRE * 60
     )
-    """Add to blocklist (revoke) token with provided JTI"""
     await jti_blocklist.set(name=jti, value="", ex=expiry)
 
 

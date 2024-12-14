@@ -1,3 +1,5 @@
+"""Requests rate limiter"""
+
 import time
 
 from functools import wraps

@@ -1,6 +1,6 @@
 """Database models"""
 
-import dataclasses
+from dataclasses import dataclass
 
 import uuid
 
@@ -9,7 +9,7 @@ import sqlalchemy.dialects.postgresql as pg
 from sqlmodel import Column, Field, SQLModel
 
 
-@dataclasses.dataclass
+@dataclass
 class User(SQLModel, table=True):
     """Database User model"""
 
