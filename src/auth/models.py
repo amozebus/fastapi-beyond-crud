@@ -1,13 +1,10 @@
 """Response models"""
 
-from dataclasses import dataclass
-
 from pydantic import BaseModel
 
 from config import settings
 
 
-@dataclass
 class Token(BaseModel):
     """Token response model"""
 

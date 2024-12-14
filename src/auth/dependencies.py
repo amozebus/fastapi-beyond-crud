@@ -31,7 +31,7 @@ class OAuth2RefreshRequestForm(OAuth2PasswordRequestForm):
         self.refresh_token = refresh_token
 
 
-bearer = OAuth2PasswordBearer(tokenUrl="/auth/token")
+bearer = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 
 
 async def get_current_user(
