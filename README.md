@@ -18,9 +18,9 @@ For Windows:
 
 - Install and start [Docker Desktop](https://docker.com)
 
-For Linux:
+For Linux(example for Arch):
 
-- Install `docker`, `docker-compose` packages with package manager of your distro (example for Arch):
+- Install `docker`, `docker-compose` packages with pacman:
 
 ```sh
 pacman -S docker docker-compose
