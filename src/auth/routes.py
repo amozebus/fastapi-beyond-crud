@@ -31,7 +31,7 @@ async def register(
 @r.post("/token", response_model=Token)
 async def token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    db_session: AsyncSession = Depends(get_db_session),
+    db_session: Annotated[AsyncSession, Depends(get_db_session)]
 ) -> Token:
     """Get access and refresh tokens"""
 
