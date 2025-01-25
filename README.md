@@ -1,3 +1,5 @@
+ <div align="center">
+
 # FastAPI Beyond CRUD 
 
 Fork of [jod35/fastapi-beyond-CRUD](https://github.com/jod35/fastapi-beyond-CRUD) with simplified auth and CRUD
@@ -8,7 +10,9 @@ Auth using [OAuth 2.0](https://datatracker.ietf.org/doc/html/rfc6749) with passw
 
 [<img src="https://jwt.io/img/icon.svg" alt="JWT Logo" height=100 />](https://jwt.io) [<img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Oauth_logo.svg" alt="OAuth Logo" height=100 />](https://oauth.net)
 
-See [original README.md](https://github.com/jod35/fastapi-beyond-CRUD/blob/main/README.md)
+See [README.md of original repository](https://github.com/jod35/fastapi-beyond-CRUD/blob/main/README.md)
+
+</div>
 
 ## How to launch (Docker Compose)
 
