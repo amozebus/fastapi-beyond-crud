@@ -2,7 +2,7 @@
 
 # FastAPI Beyond CRUD 
 
-Fork of [jod35/fastapi-beyond-CRUD](https://github.com/jod35/fastapi-beyond-CRUD) with simplified auth and CRUD
+Fork of [jod35/fastapi-beyond-CRUD](https://github.com/jod35/fastapi-beyond-CRUD) with simplified auth and removed CRUD
 
 Using [uvicorn web server](https://uvicorn.org) with [nginx](https://nginx.org)
 
