@@ -20,7 +20,7 @@ Also see [README.md of original repository](https://github.com/jod35/fastapi-bey
 
 1. Rename [`.env.example`](./.env.example) to `.env` and fill empty fields:
 
-    * .env fields descriptions:
+    * `.env` fields descriptions:
 
 > [!IMPORTANT]
 > Use Docker Compose services names in values of `DATABASE_URL` and `JTI_BLOCKLIST_URL` instead of hosts IPs
