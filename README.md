@@ -41,13 +41,9 @@ For Windows:
 
 2. Install and start [Docker Desktop](https://docker.com)
 
-For Linux(example for Arch):
+For Linux:
 
-2. Install `docker`, `docker-compose` packages with pacman:
-
-```sh
-pacman -S docker docker-compose
-```
+2. Install `docker`, `docker-compose` packages with package manager of your distro
 
 3. Run this command in root of project:
 
