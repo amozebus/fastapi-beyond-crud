@@ -22,8 +22,8 @@ Also see [README.md of original repository](https://github.com/jod35/fastapi-bey
 
     * .env fields descriptions:
 
-    > [!IMPORTANT]
-    > Use Docker Compose services names in values of `DATABASE_URL` and `JTI_BLOCKLIST_URL` instead of hosts IPs
+> [!IMPORTANT]
+> Use Docker Compose services names in values of `DATABASE_URL` and `JTI_BLOCKLIST_URL` instead of hosts IPs
 
     ```
     DATABASE_URL (str): PostgreSQL-database URL
