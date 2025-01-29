@@ -57,7 +57,7 @@ async def refresh(form_data: Annotated[OAuth2RefreshRequestForm, Depends()]) -> 
         raise BearerTokenException(detail="Revoked token")
 
     user = User(**refresh_token_data)
-    user.uid = refresh_token_data["sub"]
+    user.id = refresh_token_data["sub"]
 
     await block_jti(refresh_token_data["jti"], refresh=True)
 

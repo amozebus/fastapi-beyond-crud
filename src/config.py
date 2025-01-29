@@ -6,18 +6,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     """Model for .env variables validation"""
 
-    DB_NAME: str
-    DB_HOST: str
-    DB_PORT: int
-    DB_USER: str
-    DB_USER_PASSWORD: str
+    DATABASE_URL: str
 
     JWT_SECRET_KEY: str
-    ACCESS_TOKEN_EXPIRE: int  # minutes
-    REFRESH_TOKEN_EXPIRE: int  # days
+    ACCESS_TOKEN_EXPIRE: int
+    REFRESH_TOKEN_EXPIRE: int
 
-    REDIS_HOST: str
-    REDIS_PORT: int
+    JTI_BLOCKLIST_URL: str
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

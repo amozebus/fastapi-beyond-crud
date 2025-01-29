@@ -8,6 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN chmod +x ./startup.sh
-
-CMD ["./startup.sh"]
+CMD ["python", "src/main.py"]

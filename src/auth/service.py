@@ -16,6 +16,7 @@ async def get_user(username: str, db_session: AsyncSession) -> User:
     """Get user from database by username"""
     statement = select(User).where(User.username == username)
     result = await db_session.exec(statement)
+    await db_session.close()
 
     return result.first()
 
@@ -33,6 +34,7 @@ async def create_user(user_data: UserCreate, db_session: AsyncSession) -> User:
 
     db_session.add(user)
     await db_session.commit()
+    await db_session.close()
 
     return user
 

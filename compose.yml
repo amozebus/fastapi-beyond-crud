@@ -3,35 +3,30 @@ services:
     build: .
     restart: on-failure
     environment:
-      - DB_NAME=${DB_NAME}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_USER_PASSWORD=${DB_USER_PASSWORD}
+      - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
       - ACCESS_TOKEN_EXPIRE=${ACCESS_TOKEN_EXPIRE}
       - REFRESH_TOKEN_EXPIRE=${REFRESH_TOKEN_EXPIRE}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
+      - JTI_BLOCKLIST_URL=${JTI_BLOCKLIST_URL}
     depends_on:
       - db
-      - redis
+      - jti_blocklist
 
   db:
     image: postgres:15
     environment:
-      POSTGRES_USER: ${DB_USER} 
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_PASSWORD: ${DB_USER_PASSWORD}
+      POSTGRES_DB: userdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 12345678
     ports:
-     - ${DB_PORT}:5432
+     - 5432:5432
     volumes:
       - db-data:/var/lib/postgresql/data
   
-  redis:
+  jti_blocklist:
     image: redis:6
     ports:
-      - ${REDIS_PORT}:6379
+      - 6379:6379
   
   nginx:
     image: nginx:stable-alpine
@@ -41,7 +36,7 @@ services:
       - './nginx.conf:/etc/nginx/nginx.conf'
     depends_on:
       - api
-    
+
 
 volumes:
   db-data:

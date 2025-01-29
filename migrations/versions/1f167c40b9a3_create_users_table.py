@@ -6,13 +6,10 @@ Create Date: 2024-12-09 00:07:12.393323
 
 """
 
-import uuid
-
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-
 
 # revision identifiers, used by Alembic.
 revision: str = "1f167c40b9a3"
@@ -25,12 +22,11 @@ def upgrade() -> None:
     op.create_table(
         "users",
         sa.Column(
-            "uid",
-            sa.UUID,
+            "id",
+            sa.Integer,
             nullable=False,
             unique=True,
             primary_key=True,
-            default=uuid.uuid4,
         ),
         sa.Column("username", sa.VARCHAR, nullable=False, unique=True),
         sa.Column("password_hash", sa.VARCHAR, nullable=False),
@@ -39,4 +35,4 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.drop_table("users")
+    op.drop_table("users", if_exists=True)

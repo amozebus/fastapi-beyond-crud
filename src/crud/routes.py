@@ -1,4 +1,4 @@
-"""CRUD template"""
+"""Routes examples for CRUD"""
 
 from typing import Any, Annotated
 
@@ -10,7 +10,7 @@ from auth.dependencies import get_current_user
 
 from rate_limit import rate_limit
 
-r = APIRouter(prefix="/crud")
+r = APIRouter()
 
 
 @r.get("/unprotected", response_model=dict[str, str])
@@ -18,7 +18,7 @@ r = APIRouter(prefix="/crud")
 async def hello_world(request: Request) -> dict[str, str]:
     """Unprotected handler template"""
 
-    return {"message": "Hello, world!"}
+    return {"message": "Unprotected endpoint"}
 
 
 @r.get("/protected", response_model=dict[str, Any])
@@ -28,4 +28,4 @@ async def hello_world_protected(
 ) -> dict[str, Any]:
     """Protected handler template"""
 
-    return {"message": "Hello, world!", "user": user}
+    return {"message": "Protected endpoint", "user": user}

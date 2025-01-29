@@ -1,9 +1,10 @@
 """Utils for passwords and tokens"""
 
-import uuid
 import time
 
 from datetime import datetime, timedelta, timezone
+
+import uuid
 
 import jwt
 
@@ -45,7 +46,7 @@ def create_token(user: User, refresh: bool = False) -> str:
     return jwt.encode(
         headers={"alg": "HS256", "typ": "JWT"},
         payload={
-            "sub": str(user.uid),
+            "sub": str(user.id),
             "username": user.username,
             "iat": int(time.time()),
             "exp": datetime.now(timezone.utc) + exp_delta,
