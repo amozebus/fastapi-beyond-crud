@@ -25,7 +25,7 @@ Also see [README.md of original repository](https://github.com/jod35/fastapi-bey
 > [!IMPORTANT]
 > Use Docker Compose services names in values of `DATABASE_URL` and `JTI_BLOCKLIST_URL` instead of hosts IPs
 
-    ```
+    
     DATABASE_URL (str): PostgreSQL-database URL
 
     JWT_SECRET_KEY (str): secret for JWTs signature
@@ -35,7 +35,7 @@ Also see [README.md of original repository](https://github.com/jod35/fastapi-bey
     REFRESH_TOKEN_EXPIRE (int): refresh tokens expiry time in days
 
     JTI_BLOCKLIST_URL (str): JTI blocklist Redis-database URL
-    ```
+    
 
 For Windows:
 
